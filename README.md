@@ -10,7 +10,7 @@ wordpressのオリジナルテーマ
 
 - pug + stylus sample  
 html、cssの作成はpug+stylusで作成しております  
-pug+stylusのコード確認は下記よりお願いいたします
+pug+stylusのコード確認は下記よりお願いいたします  
   https://github.com/yohei0119/gulp-sample 
 
 - xd sample  
