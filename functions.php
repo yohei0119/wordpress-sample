@@ -179,7 +179,7 @@ if (!function_exists( 'post_is_in_descendant_category')){
  * OGP設定
  */
 function my_meta_ogp() {
-  if( is_front_page() || is_home() || is_singular() ){
+  if( is_front_page() || is_home() || is_singular() || is_category() ){
     global $post;
 
     $ogp_title = '';
@@ -190,16 +190,25 @@ function my_meta_ogp() {
 
     // 記事＆固定ページ
     if( is_singular() ) { 
-       setup_postdata($post);
-       $ogp_title = $post->post_title;
-       $ogp_descr = mb_substr(get_the_excerpt(), 0, 100);
-       $ogp_url = get_permalink();
-       wp_reset_postdata();
+      setup_postdata($post);
+      $ogp_title = $post->post_title;
+      $ogp_descr = mb_substr(get_the_excerpt(), 0, 100);
+      $ogp_url = get_permalink();
+      wp_reset_postdata();
+    } elseif ( is_category() ) { 
+      $category = get_the_category();
+      $cat = $category[0];
+      if( $cat->category_parent ) {
+        $parent_cat = get_category($cat->category_parent);
+        $ogp_title = $parent_cat->name;
+        $ogp_descr = mb_substr($parent_cat->description, 0, 100);
+        $ogp_url = get_category_link($parent_cat->term_id);   
+      }    
     // トップページ   
     } elseif ( is_front_page() || is_home() ) { 
-       $ogp_title = get_bloginfo('name');
-       $ogp_descr = get_bloginfo('description');
-       $ogp_url = home_url();
+      $ogp_title = get_bloginfo('name');
+      $ogp_descr = get_bloginfo('description');
+      $ogp_url = home_url();
     }
 
     // og:type
@@ -207,8 +216,8 @@ function my_meta_ogp() {
 
     // og:image
     if ( is_singular() && has_post_thumbnail() ) {
-       $ps_thumb = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full');
-       $ogp_img = $ps_thumb[0];
+      $ps_thumb = wp_get_attachment_image_src( get_post_thumbnail_id(), 'full');
+      $ogp_img = $ps_thumb[0];
     } else {
      $ogp_img = 'TOPページ＆アイキャッチ画像がないときに使われる画像のURL';
     }
